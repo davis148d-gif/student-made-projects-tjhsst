@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101216" />
+  <title>Student Created Games</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    
+    :root {
+      color-scheme: dark;
+      --page: #101216;
+      --header: #171921;
+      --surface: #1d2028;
+      --surface-hover: #252933;
+      --text: #f2f3f5;
+      --muted: #9c9fab;
+      --border: #30333d;
+      --accent: #7f72df;
+      --accent-hover: #9185ea;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --page: #f1f2f5;
+      --header: #ffffff;
+      --surface: #ffffff;
+      --surface-hover: #f1f2f6;
+      --text: #202229;
+      --muted: #6e7079;
+      --border: #dcdee5;
+      --accent: #6b5cc9;
+      --accent-hover: #594bb3;
+      --shadow: 0 10px 28px rgba(35, 38, 48, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: "Manrope", Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a,
+    button,
+    input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--header) 94%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 9px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .theme-toggle,
+    .filter-button {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 120ms ease;
+    }
+
+    .theme-toggle {
+      width: 38px;
+      padding: 0;
+    }
+
+    .filter-button {
+      padding: 8px 11px;
+    }
+
+    .theme-toggle:hover,
+    .filter-button:hover {
+      border-color: #4c5060;
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .theme-toggle:active,
+    .filter-button:active {
+      transform: scale(0.97);
+    }
+
+    .theme-toggle:focus-visible,
+    .filter-button:focus-visible,
+    .search:focus-visible,
+    .game-card:focus-visible,
+    .hero-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .hero {
+      display: flex;
+      min-height: 245px;
+      align-items: end;
+      padding: 48px 0 28px;
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.35rem, 5.5vw, 4.25rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-description {
+      max-width: 520px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .hero-link {
+      display: inline-flex;
+      min-height: 42px;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background-color 120ms ease, transform 120ms ease;
+    }
+
+    .hero-link:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .games-section {
+      padding: 20px 0 72px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    #result-count {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 0 1 300px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .search {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+
+    .search::placeholder {
+      color: var(--muted);
+    }
+
+    .search:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .filter-button i {
+      font-size: 0.68rem;
+    }
+
+    .filter-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .game-card {
+      position: relative;
+      display: flex;
+      min-height: 230px;
+      overflow: hidden;
+      align-items: end;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(180deg, transparent 18%, rgba(9, 10, 14, 0.9) 100%),
+        var(--card-image, linear-gradient(135deg, #656d98 0 55%, #ca6078 55% 100%));
+      background-position: center;
+      background-size: cover;
+      box-shadow: var(--shadow);
+      color: white;
+      text-decoration: none;
+      transition:
+        transform 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .game-card:hover {
+      z-index: 2;
+      border-color: #585d6b;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
+      transform: translateY(-4px);
+    }
+
+    .game-card-content {
+      width: 100%;
+      padding: 14px;
+    }
+
+    .game-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 7px;
+    }
+
+    .game-tag {
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 5px;
+      background: rgba(16, 18, 23, 0.72);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .game-tag i {
+      margin-right: 3px;
+      color: #b7acff;
+      font-size: 0.56rem;
+    }
+
+    .game-card h3 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .game-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 58px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .site-footer {
+      padding: 18px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: center;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        min-height: 220px;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .search-wrap {
+        width: 100%;
+        max-width: 420px;
+        flex-basis: auto;
+      }
+
+      .filters {
+        justify-content: flex-start;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      .header-inner {
+        min-height: 60px;
+      }
+
+      .brand {
+        max-width: 230px;
+        font-size: 0.82rem;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+
+      .hero {
+        min-height: 205px;
+        padding: 38px 0 24px;
+      }
+
+      .hero-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 11vw, 3.4rem);
+      }
+
+      .hero-description {
+        font-size: 0.88rem;
+      }
+
+      .hero-link {
+        min-height: 40px;
+      }
+
+      .game-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .game-card {
+        min-height: 250px;
+      }
+
+      .filter-button {
+        min-height: 36px;
+        padding-inline: 9px;
+        font-size: 0.71rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  
+
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#" aria-label="Student Created Games home">
+        <span class="brand-mark" aria-hidden="true">
+          <i class="fa-solid fa-gamepad"></i>
+        </span>
+        <span>Student Created Games</span>
+      </a>
+
+      <button
+        class="theme-toggle"
+        id="theme-toggle"
+        type="button"
+        aria-label="Switch to light mode"
+      >
+        <i id="theme-icon" class="fa-solid fa-sun" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Student arcade</p>
+          <h1>Student Created Games</h1>
+          <p class="hero-description">
+            Games made by students at our school.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="games-section container" id="games" aria-labelledby="games-heading">
+      <div class="section-heading">
+        <h2 id="games-heading">All Games</h2>
+        <p id="result-count" aria-live="polite"></p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-wrap">
+          <span hidden>Search games</span>
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            class="search"
+            id="search"
+            type="search"
+            placeholder="Search games..."
+            autocomplete="off"
+          />
+        </label>
+
+        <div class="filters" id="filters" aria-label="Filter games"></div>
+      </div>
+
+      <div class="game-grid" id="game-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Student Created Games</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/gh/davis148d-gif/student-made-games-tjhsst@main/js/index.js"></script>
+</body>
+</html>
