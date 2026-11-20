@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101216" />
+  <title>Student Made Projects</title>
+  <meta name="description" content="Games, utilities, and tools made by TJHSST students." />
+  <meta property="og:title" content="Student Made Projects" />
+  <meta property="og:description" content="Games, utilities, and tools made by TJHSST students." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #101216;
+      --header: #171921;
+      --surface: #1d2028;
+      --surface-hover: #252933;
+      --text: #f2f3f5;
+      --muted: #9c9fab;
+      --border: #30333d;
+      --accent: #7f72df;
+      --accent-hover: #9185ea;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --page: #f1f2f5;
+      --header: #ffffff;
+      --surface: #ffffff;
+      --surface-hover: #f1f2f6;
+      --text: #202229;
+      --muted: #6e7079;
+      --border: #dcdee5;
+      --accent: #6b5cc9;
+      --accent-hover: #594bb3;
+      --shadow: 0 10px 28px rgba(35, 38, 48, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: "Manrope", Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a,
+    button,
+    input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--header) 94%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      min-width: 0;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 9px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .top-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      min-height: 36px;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 7px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 120ms ease;
+    }
+
+    .nav-button i {
+      font-size: 0.72rem;
+    }
+
+    .nav-button:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .nav-button[aria-current="page"] {
+      border-color: var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .nav-button[aria-current="page"] i {
+      color: var(--accent);
+    }
+
+    .nav-button:active {
+      transform: scale(0.97);
+    }
+
+    .theme-toggle,
+    .filter-button,
+    .clear-filters {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 120ms ease;
+    }
+
+    .theme-toggle {
+      width: 38px;
+      flex: 0 0 38px;
+      padding: 0;
+    }
+
+    .filter-button {
+      flex: 0 0 auto;
+      min-height: 34px;
+      padding: 6px 11px;
+      font-size: 0.75rem;
+    }
+
+    .clear-filters {
+      flex: 0 0 auto;
+      min-height: 34px;
+      padding: 6px 10px;
+      border-color: transparent;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .clear-filters:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .theme-toggle:hover,
+    .filter-button:hover {
+      border-color: #4c5060;
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .theme-toggle:active,
+    .filter-button:active,
+    .clear-filters:active {
+      transform: scale(0.97);
+    }
+
+    .theme-toggle:focus-visible,
+    .nav-button:focus-visible,
+    .filter-button:focus-visible,
+    .clear-filters:focus-visible,
+    .search:focus-visible,
+    .game-card:focus-visible,
+    .hero-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .hero {
+      display: flex;
+      min-height: 225px;
+      align-items: end;
+      padding: 44px 0 26px;
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.35rem, 5.5vw, 4.25rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-description {
+      max-width: 520px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .games-section,
+    .contributors-section {
+      padding: 18px 0 72px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-heading h2,
+    .contributors-heading h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    #result-count {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
+    .search {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+
+    .search::placeholder {
+      color: var(--muted);
+    }
+
+    .search:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-button i {
+      font-size: 0.68rem;
+    }
+
+    .filter-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .game-grid,
+    .contributors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .game-card {
+      position: relative;
+      display: flex;
+      min-height: 230px;
+      overflow: hidden;
+      align-items: end;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(180deg, transparent 18%, rgba(9, 10, 14, 0.9) 100%),
+        var(--card-image, linear-gradient(135deg, #656d98 0 55%, #ca6078 55% 100%));
+      background-position: center;
+      background-size: cover;
+      box-shadow: var(--shadow);
+      color: white;
+      text-decoration: none;
+      transition:
+        transform 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .game-card:hover {
+      z-index: 2;
+      border-color: #585d6b;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
+      transform: translateY(-4px);
+    }
+
+    .game-card-content {
+      width: 100%;
+      padding: 14px;
+    }
+
+    .game-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 7px;
+    }
+
+    .game-tag {
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 5px;
+      background: rgba(16, 18, 23, 0.72);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .game-tag i {
+      margin-right: 3px;
+      color: #b7acff;
+      font-size: 0.56rem;
+    }
+
+    .game-card h3 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .game-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 58px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .contributors-heading {
+      margin-bottom: 16px;
+    }
+
+    .contributors-heading p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .contributor-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .contributor-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 14px;
+      place-items: center;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+      color: var(--accent);
+    }
+
+    .contributor-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.96rem;
+      font-weight: 800;
+    }
+
+    .contributor-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .site-footer {
+      padding: 18px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: center;
+    }
+
+    @media (max-width: 800px) {
+      .header-inner {
+        flex-wrap: wrap;
+        padding: 10px 0;
+        gap: 10px;
+      }
+
+      .top-nav {
+        order: 3;
+        width: 100%;
+        padding-top: 6px;
+        border-top: 1px solid var(--border);
+      }
+
+      .hero {
+        min-height: 200px;
+      }
+
+      .search-wrap {
+        max-width: 100%;
+      }
+
+      .game-grid,
+      .contributors-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        width: calc(100% - 28px);
+      }
+
+      .header-inner {
+        min-height: 60px;
+      }
+
+      .brand {
+        max-width: 230px;
+        font-size: 0.82rem;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+
+      .hero {
+        min-height: 190px;
+        padding: 34px 0 22px;
+      }
+
+      .hero-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 11vw, 3.4rem);
+      }
+
+      .hero-description {
+        font-size: 0.88rem;
+      }
+
+      .game-grid,
+      .contributors-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .game-card {
+        min-height: 250px;
+      }
+
+      .filter-button {
+        min-height: 32px;
+        padding-inline: 9px;
+        font-size: 0.71rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#" aria-label="Student Made Projects home">
+        <span class="brand-mark" aria-hidden="true">
+          <i class="fa-solid fa-code"></i>
+        </span>
+        <span>Student Made Projects</span>
+      </a>
+
+      <nav class="top-nav" id="top-nav" aria-label="Main navigation"></nav>
+
+      <button
+        class="theme-toggle"
+        id="theme-toggle"
+        type="button"
+        aria-label="Switch to light mode"
+      >
+        <i id="theme-icon" class="fa-solid fa-sun" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">TJHSST</p>
+          <h1>Student Made Projects</h1>
+          <p class="hero-description">
+            Games, utilities, and random tools made by TJ students.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="games-section container" id="projects" aria-labelledby="projects-heading">
+      <div class="section-heading">
+        <h2 id="projects-heading">All Projects</h2>
+        <p id="result-count" aria-live="polite"></p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-wrap">
+          <span hidden>Search projects</span>
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            class="search"
+            id="search"
+            type="search"
+            placeholder="Search projects..."
+            autocomplete="off"
+          />
+        </label>
+
+        <div class="filter-bar">
+          <div class="filters" id="filters" aria-label="Filter projects by tag"></div>
+          <button class="clear-filters" id="clear-filters" type="button" hidden>
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            <span>Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="game-grid" id="game-grid"></div>
+    </section>
+
+    <section
+      class="contributors-section container"
+      id="contributors"
+      aria-labelledby="contributors-heading"
+      hidden
+    >
+      <div class="contributors-heading">
+        <h2 id="contributors-heading">Contributors</h2>
+        <p>Meet the students behind these projects.</p>
+      </div>
+      <div class="contributors-grid" id="contributors-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">Student Made Projects · TJHSST</div>
+  </footer>
+
+  <script type="application/json" id="contributors-data">
+    [
+      {
+        "name": "noobie (davis148d-gif on GitHub)",
+        "bio": "Writes game logic paired with AI interfaces (most of the time)"
+      }
+    ]
+  </script>
+
+  <script>
+    const categories = [
+      { id: "all", label: "All", heading: "All Projects", icon: "fa-layer-group" },
+      { id: "games", label: "Games", heading: "Games", icon: "fa-gamepad" },
+      { id: "utilities", label: "Utilities", heading: "Utilities", icon: "fa-wrench" },
+      { id: "tools", label: "CS / Tools", heading: "CS & Tools", icon: "fa-terminal" },
+      { id: "misc", label: "Misc", heading: "Misc", icon: "fa-flask" },
+      { id: "contributors", label: "Contributors", heading: "Contributors", icon: "fa-users" }
+    ];
+
+    const filters = [
+      { id: "puzzle", label: "Puzzle", icon: "fa-puzzle-piece", categories: ["games"] },
+      { id: "arcade", label: "Arcade", icon: "fa-bolt", categories: ["games"] },
+      { id: "strategy", label: "Strategy", icon: "fa-chess", categories: ["games"] },
+      { id: "math", label: "Math", icon: "fa-square-root-variable", categories: ["tools", "utilities"] },
+      { id: "cs", label: "CS", icon: "fa-code", categories: ["tools"] },
+      { id: "cybersecurity", label: "Cybersecurity", icon: "fa-solid fa-lock", categories: ["tools","utilities"]}
+    ];
+
+    const projects = [
+      {
+        title: "Brick Breaker",
+        description: "Shoot balls at bricks to survive.",
+        category: "games",
+        imagePath: "brick_breaker_icon.png",
+        url: "games/brick_breaker.html",
+        tags: ["arcade", "puzzle", "strategy"],
+        author: "noobie",
+        uiMadeByAI: true
+      },
+      {
+        title: "Connect the Pipes",
+        description: "Rotate the pipes until every piece connects.",
+        category: "games",
+        imagePath: "connect_the_pipes.png",
+        url: "games/connect_the_pipes.html",
+        tags: ["puzzle", "strategy"],
+        author: "noobie",
+        uiMadeByAI: false
+      },
+      {
+        title: "2048",
+        description: "2048, but a different theme and custom board sizes.",
+        category: "games",
+        imagePath: "2048.png",
+        url: "games/2048.html",
+        tags: ["puzzle","strategy"],
+        author: "noobie",
+        uiMadeByAI: true
+      }
+    ];
+
+    const contributors = JSON.parse(
+      document.querySelector("#contributors-data").textContent
+    );
+
+    const topNav = document.querySelector("#top-nav");
+    const sectionHeading = document.querySelector("#projects-heading");
+    const filterContainer = document.querySelector("#filters");
+    const clearFiltersButton = document.querySelector("#clear-filters");
+    const gameGrid = document.querySelector("#game-grid");
+    const searchInput = document.querySelector("#search");
+    const resultCount = document.querySelector("#result-count");
+    const projectsSection = document.querySelector("#projects");
+    const contributorsSection = document.querySelector("#contributors");
+    const contributorsGrid = document.querySelector("#contributors-grid");
+
+    let activeCategory = "all";
+    const activeTags = new Set();
+
+    function renderContributors() {
+      contributorsGrid.replaceChildren();
+
+      contributors.forEach((contributor) => {
+        const card = document.createElement("article");
+        card.className = "contributor-card";
+
+        const iconWrap = document.createElement("div");
+        iconWrap.className = "contributor-icon";
+        iconWrap.setAttribute("aria-hidden", "true");
+
+        const icon = document.createElement("i");
+        icon.className = "fa-solid fa-user";
+        iconWrap.appendChild(icon);
+
+        const name = document.createElement("h3");
+        name.textContent = contributor.name;
+
+        const bio = document.createElement("p");
+        bio.textContent = contributor.bio;
+
+        card.append(iconWrap, name, bio);
+        contributorsGrid.appendChild(card);
+      });
+    }
+
+    function getVisibleFilters() {
+      if (activeCategory === "all") return filters;
+      return filters.filter((f) => f.categories.includes(activeCategory));
+    }
+
+    function renderTopNav() {
+      topNav.replaceChildren();
+
+      categories.forEach((cat) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "nav-button";
+
+        if (cat.id === activeCategory) {
+          button.setAttribute("aria-current", "page");
+        }
+
+        const icon = document.createElement("i");
+        icon.className = `fa-solid ${cat.icon}`;
+        icon.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.textContent = cat.label;
+
+        button.append(icon, label);
+        button.addEventListener("click", () => {
+          activeCategory = cat.id;
+
+          const showingContributors = cat.id === "contributors";
+          projectsSection.hidden = showingContributors;
+          contributorsSection.hidden = !showingContributors;
+
+          sectionHeading.textContent = cat.heading;
+
+          if (!showingContributors) {
+            const allowed = new Set(getVisibleFilters().map((f) => f.id));
+            for (const tagId of Array.from(activeTags)) {
+              if (!allowed.has(tagId)) activeTags.delete(tagId);
+            }
+
+            renderFilters();
+            renderProjects();
+          }
+
+          renderTopNav();
+        });
+
+        topNav.appendChild(button);
+      });
+    }
+
+    function renderFilters() {
+      filterContainer.replaceChildren();
+
+      const allBtn = document.createElement("button");
+      allBtn.type = "button";
+      allBtn.className = "filter-button";
+      allBtn.setAttribute("aria-pressed", String(activeTags.size === 0));
+
+      const allIcon = document.createElement("i");
+      allIcon.className = "fa-solid fa-layer-group";
+      allIcon.setAttribute("aria-hidden", "true");
+
+      const allLabel = document.createElement("span");
+      allLabel.textContent = "All";
+
+      allBtn.append(allIcon, allLabel);
+      allBtn.addEventListener("click", () => {
+        activeTags.clear();
+        renderFilters();
+        renderProjects();
+      });
+      filterContainer.appendChild(allBtn);
+
+      getVisibleFilters().forEach((filter) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "filter-button";
+        button.setAttribute("aria-pressed", String(activeTags.has(filter.id)));
+
+        const icon = document.createElement("i");
+        icon.className = `fa-solid ${filter.icon}`;
+        icon.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.textContent = filter.label;
+
+        button.append(icon, label);
+        button.addEventListener("click", () => {
+          if (activeTags.has(filter.id)) {
+            activeTags.delete(filter.id);
+          } else {
+            activeTags.add(filter.id);
+          }
+          renderFilters();
+          renderProjects();
+        });
+
+        filterContainer.appendChild(button);
+      });
+
+      clearFiltersButton.hidden =
+        activeTags.size === 0 && searchInput.value.trim() === "";
+    }
+
+    function renderProjects() {
+      const term = searchInput.value.trim().toLowerCase();
+
+      const visibleProjects = projects.filter((project) => {
+        const matchesCategory =
+          activeCategory === "all" || project.category === activeCategory;
+
+        const matchesTags =
+          activeTags.size === 0 ||
+          Array.from(activeTags).every((tagId) => project.tags.includes(tagId));
+
+        const searchableText =
+          `${project.title} ${project.description} ${project.category} ${project.tags.join(" ")} ${project.author || ""}`.toLowerCase();
+
+        return matchesCategory && matchesTags && searchableText.includes(term);
+      });
+
+      gameGrid.replaceChildren();
+      resultCount.textContent =
+        `${visibleProjects.length} ${visibleProjects.length === 1 ? "project" : "projects"}`;
+
+      clearFiltersButton.hidden = activeTags.size === 0 && term === "";
+
+      if (visibleProjects.length === 0) {
+        const emptyState = document.createElement("p");
+        emptyState.className = "empty-state";
+        emptyState.textContent = "No projects found.";
+        gameGrid.appendChild(emptyState);
+        return;
+      }
+
+      visibleProjects.forEach((project) => {
+        const card = document.createElement("a");
+        card.className = "game-card";
+        card.href = project.url;
+        card.setAttribute(
+          "aria-label",
+          `Open ${project.title}: ${project.description}`
+        );
+
+        if (project.imagePath) {
+          card.style.setProperty("--card-image", `url("${project.imagePath}")`);
+        } else if (project.gradient) {
+          card.style.setProperty("--card-image", project.gradient);
+        }
+
+        const content = document.createElement("div");
+        content.className = "game-card-content";
+
+        const tags = document.createElement("div");
+        tags.className = "game-tags";
+
+        project.tags.forEach((tagId) => {
+          const filter = filters.find((item) => item.id === tagId);
+          if (!filter) return;
+
+          const tag = document.createElement("span");
+          tag.className = "game-tag";
+
+          const icon = document.createElement("i");
+          icon.className = `fa-solid ${filter.icon}`;
+          icon.setAttribute("aria-hidden", "true");
+
+          tag.append(icon, document.createTextNode(` ${filter.label}`));
+          tags.appendChild(tag);
+        });
+
+        if (project.author) {
+          const authorTag = document.createElement("span");
+          authorTag.className = "game-tag";
+
+          const personIcon = document.createElement("i");
+          personIcon.className = "fa-solid fa-user";
+          personIcon.setAttribute("aria-hidden", "true");
+
+          authorTag.append(personIcon, document.createTextNode(` ${project.author}`));
+          tags.appendChild(authorTag);
+        }
+
+        if (project.uiMadeByAI === true) {
+          const disclaimerTag = document.createElement("span");
+          disclaimerTag.className = "game-tag";
+
+          const aiIcon = document.createElement("i");
+          aiIcon.className = "fa-solid fa-wand-magic-sparkles";
+          aiIcon.setAttribute("aria-hidden", "true");
+
+          disclaimerTag.append(
+            aiIcon,
+            document.createTextNode(" UI by AI")
+          );
+          tags.appendChild(disclaimerTag);
+        }
+
+        const title = document.createElement("h3");
+        title.textContent = project.title;
+
+        const description = document.createElement("p");
+        description.textContent = project.description;
+
+        content.append(tags, title, description);
+        card.appendChild(content);
+        gameGrid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", renderProjects);
+
+    clearFiltersButton.addEventListener("click", () => {
+      activeTags.clear();
+      searchInput.value = "";
+      renderFilters();
+      renderProjects();
+      searchInput.focus();
+    });
+
+    const root = document.documentElement;
+    const themeToggle = document.querySelector("#theme-toggle");
+    const themeIcon = document.querySelector("#theme-icon");
+
+    function applyTheme(theme) {
+      const isLight = theme === "light";
+
+      root.dataset.theme = theme;
+      themeIcon.className = isLight
+        ? "fa-solid fa-moon"
+        : "fa-solid fa-sun";
+      themeToggle.setAttribute(
+        "aria-label",
+        isLight ? "Switch to dark mode" : "Switch to light mode"
+      );
+    }
+
+    let savedTheme = null;
+
+    try {
+      savedTheme =
+        localStorage.getItem("student-projects-theme") ||
+        localStorage.getItem("student-games-theme");
+    } catch (error) {
+      // Theme switching still works if storage is unavailable.
+    }
+
+    const preferredTheme =
+      window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark";
+
+    applyTheme(savedTheme || preferredTheme);
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme =
+        root.dataset.theme === "dark" ? "light" : "dark";
+
+      applyTheme(nextTheme);
+
+      try {
+        localStorage.setItem("student-projects-theme", nextTheme);
+      } catch (error) {
+        // No action needed; theme remains applied for this visit.
+      }
+    });
+
+    renderTopNav();
+    renderFilters();
+    renderProjects();
+    renderContributors();
+  </script>
+</body>
+</html>
