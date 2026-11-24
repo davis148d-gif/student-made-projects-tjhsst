@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collatz Calculator</title>
+  <style>
+    
+    :root {
+      color-scheme: dark;
+      --bg: #10151e;
+      --panel: #192230;
+      --soft: #202c3c;
+      --text: #edf2f7;
+      --muted: #a7b3c2;
+      --blue: #61dafb;
+      --orange: #ffbf69;
+      --green: #63d6a0;
+      --border: #344356;
+      --danger: #ff9a9a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 28px 16px;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 system-ui, sans-serif;
+    }
+
+    main { width: min(1050px, 100%); margin: auto; }
+    h1 { margin: 0 0 4px; font-size: clamp(1.6rem, 4vw, 2.3rem); }
+    h2 { margin: 0 0 14px; font-size: 1.15rem; }
+    p { color: var(--muted); }
+    .intro { margin: 0 0 20px; }
+
+    .panel {
+      margin: 16px 0;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button, .file-label {
+      min-height: 42px;
+      padding: 9px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary { background: #12617a; border-color: #248eac; }
+    button:hover, .file-label:hover { border-color: var(--blue); }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+
+    input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    #status { margin: 14px 0 0; color: var(--green); }
+    #status.error { color: var(--danger); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      min-width: 0;
+      padding: 14px;
+      background: var(--soft);
+      border-radius: 9px;
+    }
+
+    .stat-label { display: block; color: var(--muted); font-size: .9rem; }
+    .stat-value {
+      display: block;
+      margin-top: 4px;
+      overflow-wrap: anywhere;
+      font-size: 1.2rem;
+      font-weight: 650;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      border-radius: 3px;
+      vertical-align: -1px;
+    }
+
+    canvas { display: block; width: 100%; height: 320px; }
+    .note { margin-bottom: 0; font-size: .9rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 9px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+
+    @media (max-width: 540px) {
+      body { padding: 18px 10px; }
+      .panel { padding: 14px; }
+      canvas { height: 260px; }
+    }
+  
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Collatz Conjecture Calculator</h1>
+    <p class="intro">
+      Calculates positive integers in order and summarizes the results every
+      10,000 numbers. The computation runs in a background worker.
+    </p>
+
+    <section class="panel" aria-label="Calculator controls">
+      <div class="controls">
+        <button id="toggleButton" class="primary" type="button">Pause</button>
+        <button id="exportButton" type="button">Download JSON backup</button>
+        <label class="file-label" for="importFile">Import JSON backup</label>
+        <input id="importFile" type="file" accept=".json,application/json">
+      </div>
+      <p id="status" role="status">Loading saved progress…</p>
+    </section>
+
+    <section class="panel">
+      <h2>Summary</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Numbers completed</span>
+          <strong class="stat-value" id="completed">0</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Next starting number</span>
+          <strong class="stat-value" id="nextNumber">1</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Average steps overall</span>
+          <strong class="stat-value" id="overallAverage">—</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Most steps found</span>
+          <strong class="stat-value" id="maxSteps">—</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Starting number with most steps</span>
+          <strong class="stat-value" id="maxNumber">—</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Current interval progress</span>
+          <strong class="stat-value" id="intervalProgress">0 / 10,000</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Steps per 10,000 starting numbers</h2>
+      <div class="legend">
+        <span><i class="swatch" style="background:#61dafb"></i>Average steps</span>
+        <span><i class="swatch" style="background:#ffbf69"></i>Maximum steps</span>
+      </div>
+      <canvas id="chart" aria-label="Graph of average and maximum Collatz steps by 10,000-number interval"></canvas>
+      <p class="note">The graph retains the latest 120 completed intervals.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Top 10 starting numbers by step count</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Rank</th><th>Starting number</th><th>Steps</th></tr>
+          </thead>
+          <tbody id="topTable">
+            <tr><td colspan="3">No numbers calculated yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/gh/davis148d-gif/student-made-projects-tjhsst@main/js/collatz.js"></script>
+</body>
+</html>
