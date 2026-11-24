@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f1eb">
+  <title>Clock</title>
+  <link rel="icon" href='clock.png'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    
+    :root {
+      color-scheme: light;
+      --page: #f3f1eb;
+      --surface: #faf9f5;
+      --surface-2: #eeece5;
+      --ink: #252722;
+      --muted: #77796f;
+      --line: #d9d8cf;
+      --accent: #a64e37;
+      --shadow: 0 3px 14px #26271f0b;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { width: 100%; height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--page);
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-weight: 400;
+      letter-spacing: .01em;
+      transition: background .2s, color .2s;
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --page: #20211e;
+      --surface: #292a26;
+      --surface-2: #33342f;
+      --ink: #eeece3;
+      --muted: #aaa99e;
+      --line: #44453e;
+      --accent: #d18a6d;
+      --shadow: 0 3px 14px #0002;
+    }
+
+    button, input, select { font: inherit; }
+    button, select { color: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      height: 100%;
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      min-height: 64px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wordmark {
+      flex: 0 0 auto;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      align-self: stretch;
+      align-items: stretch;
+      gap: 4px;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar { display: none; }
+
+    .nav-button {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 0 12px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-button:hover, .nav-button.active { color: var(--ink); }
+
+    .nav-button.active::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      bottom: 0;
+      left: 12px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .header-date {
+      margin-left: auto;
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      min-height: 0;
+      padding: 20px 0;
+    }
+
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+      scrollbar-color: var(--line) transparent;
+    }
+
+    .view.active { display: flex; }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: var(--shadow);
+    }
+
+    .clock-view {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .clock-content {
+      width: min(100%, 620px);
+      padding: 16px;
+    }
+
+    .section-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .digital-time {
+      margin-top: 12px;
+      font-size: clamp(48px, 10vw, 88px);
+      font-weight: 300;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .025em;
+    }
+
+    .date-line {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .clock-face-wrap {
+      width: min(42vh, 360px, 74vw);
+      min-width: 190px;
+      margin: clamp(16px, 4vh, 32px) auto;
+      aspect-ratio: 1;
+    }
+
+    .clock-face { display: block; width: 100%; height: 100%; }
+    .face { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+    .tick { stroke: var(--muted); stroke-width: 1.4; stroke-linecap: round; }
+    .tick.major { stroke: var(--ink); stroke-width: 2.2; }
+
+    .face-number {
+      fill: var(--ink);
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 14px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .hand { stroke-linecap: round; }
+    .hour-hand { stroke: var(--ink); stroke-width: 5; }
+    .minute-hand { stroke: var(--ink); stroke-width: 3; }
+    .second-hand { stroke: var(--accent); stroke-width: 1.5; }
+    .pin { fill: var(--accent); }
+
+    .clock-zone {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .feature-view {
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .feature-panel {
+      display: flex;
+      flex-direction: column;
+      width: min(100%, 720px);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .panel-inner {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+      padding: clamp(16px, 3vw, 24px);
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    h1, h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: .015em;
+    }
+
+    .subtle-count { color: var(--muted); font-size: 12px; }
+
+    .action-button, .outline-button {
+      min-height: 36px;
+      padding: 7px 12px;
+      border-radius: 3px;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .action-button {
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+    }
+
+    body.dark .action-button { color: #201c19; }
+    .action-button:hover { filter: brightness(.94); }
+
+    .outline-button {
+      border: 1px solid var(--line);
+      background: transparent;
+      font-size: 13px;
+    }
+
+    .outline-button:hover { border-color: var(--accent); }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    select, input[type="time"], input[type="text"], input[type="number"] {
+      min-height: 36px;
+      padding: 7px 9px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+    }
+
+    select { cursor: pointer; }
+
+    .city-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .city-controls select { flex: 1; min-width: 0; }
+
+    .city-list, .alarm-list {
+      display: grid;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-color: var(--line) transparent;
+    }
+
+    .city-row, .alarm-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 58px;
+      border-top: 1px solid var(--line);
+    }
+
+    .city-name { font-size: 15px; }
+    .city-zone, .alarm-detail {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .city-time, .alarm-time {
+      font-size: 20px;
+      font-weight: 300;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .remove-button {
+      padding: 5px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .remove-button:hover { color: var(--accent); }
+
+    .empty-state {
+      padding: 14px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .alarm-form {
+      display: grid;
+      grid-template-columns: minmax(110px, .7fr) minmax(120px, 1fr) minmax(120px, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 13px;
+    }
+
+    .alarm-form input, .alarm-form select { width: 100%; min-width: 0; }
+
+    .alarm-row {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      padding: 8px 0;
+    }
+
+    .alarm-row.off { opacity: .48; }
+    .alarm-time { font-size: 22px; }
+
+    .toggle {
+      width: 34px;
+      height: 19px;
+      appearance: none;
+      position: relative;
+      margin: 0;
+      border: 0;
+      border-radius: 12px;
+      background: var(--line);
+      cursor: pointer;
+    }
+
+    .toggle::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--surface);
+      transition: transform .16s;
+    }
+
+    .toggle:checked { background: var(--accent); }
+    .toggle:checked::before { transform: translateX(15px); }
+
+    .tool-content {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      width: min(100%, 420px);
+      margin: 0 auto;
+    }
+
+    .tool-display {
+      padding: 18px 0 24px;
+      text-align: center;
+      font-size: clamp(48px, 12vw, 78px);
+      font-weight: 300;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .025em;
+    }
+
+    .tool-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tool-inputs label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tool-inputs input { width: 100%; }
+    .button-row { display: flex; justify-content: center; gap: 8px; }
+
+    .laps {
+      max-height: 150px;
+      margin-top: 18px;
+      overflow-y: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .lap-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 2px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .settings-list {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 16px;
+      max-width: 440px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .settings-list select { min-width: 130px; }
+
+    .ring-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: #0008;
+      backdrop-filter: blur(3px);
+    }
+
+    .ring-backdrop.open { display: grid; }
+
+    .ring-dialog {
+      width: min(360px, 100%);
+      padding: 26px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: var(--shadow);
+    }
+
+    .ring-dialog h2 { margin-bottom: 10px; }
+    .ring-message { margin-bottom: 20px; color: var(--muted); }
+    .ring-dialog .button-row { flex-wrap: wrap; }
+
+    @media (max-width: 740px) {
+      .app { padding: 0 14px; }
+      .topbar { gap: 12px; min-height: 58px; }
+      .nav-button { padding: 0 9px; font-size: 13px; }
+      .nav-button.active::after { right: 9px; left: 9px; }
+      .header-date { display: none; }
+      .workspace { padding: 14px 0; }
+      .alarm-form { grid-template-columns: 1fr 1fr; }
+      .alarm-form button { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 420px) {
+      .wordmark { font-size: 13px; }
+      .topbar { gap: 8px; }
+      .nav-button { padding: 0 7px; font-size: 12px; }
+      .nav-button.active::after { right: 7px; left: 7px; }
+      .city-row { gap: 7px; }
+      .city-time { font-size: 17px; }
+      .alarm-form { grid-template-columns: 1fr; }
+      .alarm-form button { grid-column: auto; }
+    }
+
+    @media (max-height: 620px) and (min-width: 741px) {
+      .topbar { min-height: 52px; }
+      .workspace { padding: 12px 0; }
+      .clock-face-wrap { width: min(34vh, 280px, 60vw); margin: 14px auto; }
+      .digital-time { font-size: clamp(42px, 8vh, 64px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="wordmark">Clock</div>
+      <nav class="nav" aria-label="Clock features">
+        <button class="nav-button active" type="button" data-view="clock" aria-current="page">Clock</button>
+        <button class="nav-button" type="button" data-view="world">World</button>
+        <button class="nav-button" type="button" data-view="alarms">Alarms</button>
+        <button class="nav-button" type="button" data-view="timer">Timer</button>
+        <button class="nav-button" type="button" data-view="stopwatch">Stopwatch</button>
+        <button class="nav-button" type="button" data-view="settings">Settings</button>
+      </nav>
+      <div class="header-date" id="headerDate"></div>
+    </header>
+
+    <main class="workspace">
+      <section class="view clock-view active" id="view-clock" aria-label="Local clock">
+        <div class="clock-content">
+          <div class="section-label">Local time</div>
+          <div class="digital-time" id="digitalTime">--:--:--</div>
+          <div class="date-line" id="dateLine"></div>
+          <div class="clock-face-wrap">
+            <svg class="clock-face" viewBox="0 0 240 240" role="img" aria-label="Analog clock">
+              <circle class="face" cx="120" cy="120" r="112"></circle>
+              <g id="ticks"></g>
+              <g id="numbers"></g>
+              <line class="hand hour-hand" id="hourHand" x1="120" y1="124" x2="120" y2="68"></line>
+              <line class="hand minute-hand" id="minuteHand" x1="120" y1="124" x2="120" y2="42"></line>
+              <line class="hand second-hand" id="secondHand" x1="120" y1="130" x2="120" y2="31"></line>
+              <circle class="pin" cx="120" cy="120" r="4"></circle>
+            </svg>
+          </div>
+          <div class="clock-zone" id="localZone"></div>
+        </div>
+      </section>
+
+      <section class="view feature-view" id="view-world" aria-label="World clocks">
+        <div class="panel feature-panel">
+          <div class="panel-inner">
+            <div class="panel-heading">
+              <h1>World clocks <span class="subtle-count" id="cityCount"></span></h1>
+            </div>
+            <form class="city-controls" id="cityForm">
+              <select id="citySelect" aria-label="Choose a city"></select>
+              <button class="action-button" type="submit">Add city</button>
+            </form>
+            <div class="city-list" id="cityList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view feature-view" id="view-alarms" aria-label="Alarms">
+        <div class="panel feature-panel">
+          <div class="panel-inner">
+            <div class="panel-heading">
+              <h1>Alarms <span class="subtle-count" id="alarmCount"></span></h1>
+            </div>
+            <form class="alarm-form" id="alarmForm">
+              <input id="alarmTime" type="time" required aria-label="Alarm time">
+              <input id="alarmLabel" type="text" maxlength="40" placeholder="Label" aria-label="Alarm label">
+              <select id="alarmRepeat" aria-label="Repeat">
+                <option value="daily">Every day</option>
+                <option value="once">Once</option>
+              </select>
+              <button class="action-button" type="submit">Add alarm</button>
+            </form>
+            <div class="alarm-list" id="alarmList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view feature-view" id="view-timer" aria-label="Timer">
+        <div class="panel feature-panel">
+          <div class="panel-inner">
+            <h1>Timer</h1>
+            <div class="tool-content">
+              <div class="tool-inputs">
+                <label>Minutes
+                  <input id="timerMinutes" type="number" min="0" max="999" value="5">
+                </label>
+                <label>Seconds
+                  <input id="timerSeconds" type="number" min="0" max="59" value="0">
+                </label>
+              </div>
+              <div class="tool-display" id="timerDisplay">05:00</div>
+              <div class="button-row">
+                <button class="action-button" id="timerStart" type="button">Start</button>
+                <button class="outline-button" id="timerReset" type="button">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view feature-view" id="view-stopwatch" aria-label="Stopwatch">
+        <div class="panel feature-panel">
+          <div class="panel-inner">
+            <h1>Stopwatch</h1>
+            <div class="tool-content">
+              <div class="tool-display" id="stopwatchDisplay">00:00.0</div>
+              <div class="button-row">
+                <button class="action-button" id="stopwatchStart" type="button">Start</button>
+                <button class="outline-button" id="lapButton" type="button" disabled>Lap</button>
+                <button class="outline-button" id="stopwatchReset" type="button">Reset</button>
+              </div>
+              <div class="laps" id="laps"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view feature-view" id="view-settings" aria-label="Settings">
+        <div class="panel feature-panel">
+          <div class="panel-inner">
+            <div class="panel-heading"><h1>Settings</h1></div>
+            <div class="settings-list">
+              <label for="timeFormat">Time format</label>
+              <select id="timeFormat">
+                <option value="12">12-hour</option>
+                <option value="24">24-hour</option>
+              </select>
+              <label for="themeSelect">Appearance</label>
+              <select id="themeSelect">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="ring-backdrop" id="ringBackdrop" role="dialog" aria-modal="true" aria-labelledby="ringTitle">
+    <div class="ring-dialog">
+      <h2 id="ringTitle">Alarm</h2>
+      <div class="ring-message" id="ringMessage"></div>
+      <div class="button-row">
+        <button class="outline-button" id="snoozeButton" type="button">Snooze 5 min</button>
+        <button class="action-button" id="dismissButton" type="button">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/davis148d-gif/student-made-projects-tjhsst@main/js/clock.js"></script>
+</body>
+</html>
